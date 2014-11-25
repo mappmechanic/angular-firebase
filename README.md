@@ -1,4 +1,4 @@
-angular-firebase
+Angular-Firebase
 ================
 
-Experiment to develop an Angular App with Firebase as backend
+Simple App acting as a common chat room for all users to enter a display name and start chating.
