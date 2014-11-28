@@ -1,0 +1,15 @@
+/* SASS Script for CSS Styling */
+
+/* Common Variables used accross the project */
+
+$primaryColor: #30aed7;
+
+body {
+  background-color: $primaryColor !important; 
+  background-image: url(../assets/bg.png);
+  background-repeat: repeat-x;
+  background-position: bottom;
+  background-size: 80%;
+}
+
+/* Test */

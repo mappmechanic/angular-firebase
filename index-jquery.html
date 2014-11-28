@@ -1,0 +1,83 @@
+<!DOCTYPE>
+<html>
+  <head>
+    <script src='https://cdn.firebase.com/js/client/1.1.1/firebase.js'></script>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
+    <style type="text/css">
+        #chatWindow
+        {
+            display: none;
+        }
+    </style>
+  </head>
+  <body>
+    <div id="enterWindow">
+        <h2>Enter Your Name</h2>
+        <input type="text" id='name' placeholder="Display Name">
+        <button id="enterBtn">Enter</button>
+    </div>
+    <div id="chatWindow">
+        <div id='messagesDiv'></div>
+        <input type='text' id='messageInput' placeholder='Message'>
+        <button id="sendBtn">Send</button>
+    </div>
+    <script>
+     var displayName;     
+        
+     // Base URL pointing to the Firebase Account
+     var baseUrl = "https://glowing-heat-2176.firebaseio.com/";
+        
+     // User Object Reference on Firebase
+     var user = new Firebase(baseUrl+'user');
+        
+     var enterBtnHandler = function enterHandler(event) {
+         console.log("Enter Button Clicked");
+        displayName = $("#name").val();
+        user.push({name:displayName,loginAt: new Date()});
+        $('#enterWindow').hide();
+        $('#chatWindow').show();
+     };
+        
+    $('#enterBtn').on('click',enterBtnHandler);
+        
+     user.on('child_added',function(snapshot) {
+        var user = snapshot.val();
+        displayUserEvent(user.name, 'entered');
+     });
+        
+      var chat = new Firebase(baseUrl+'chat');
+    
+     var sendMessage =  function sendMessage(event)
+     {
+         var text = $('#messageInput').val();
+            console.log("saving data");
+         if(displayName != undefined)
+            chat.push({name: displayName, text: text});
+         
+         $('#messageInput').val('');
+     }
+        
+      $('#messageInput').keypress(function (e) {
+        if (e.keyCode == 13) {
+          sendMessage();
+        }
+      });
+        
+      $('#sendBtn').on('click',sendMessage);
+        
+    chat.on('child_added', function(snapshot) {
+      var message = snapshot.val();
+      displayChatMessage(message.name, message.text);
+    });
+    function displayChatMessage(name, text) {
+        $('<div/>').text(text).prepend($('<em/>').text(name+': ')).appendTo($('#messagesDiv'));
+        $('#messagesDiv')[0].scrollTop = $('#messagesDiv')[0].scrollHeight;
+      };
+    function displayUserEvent(name,event)
+        {
+          $('<div/>').text(event+' the chat').prepend($('<em/>').text(name+' ')).appendTo($('#messagesDiv'));
+          $('#messagesDiv')[0].scrollTop = $('#messagesDiv')[0].scrollHeight;  
+        }
+    </script>
+  </body>
+</html>
